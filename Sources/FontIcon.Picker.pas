@@ -3,6 +3,7 @@
 {       FontIcon Editor: A font icon helper for Delphi                         }
 {                                                                              }
 {       Copyright (c) 2019 Luca Minut                                          }
+{       Contributor to this file Daniele Teti (d.teti@bittime.it)              }
 {                                                                              }
 {       https://github.com/lminuti/FontIconEditor                              }
 {                                                                              }
@@ -51,6 +52,7 @@ type
     Label7: TLabel;
     Label8: TLabel;
     edtColor: TColorBox;
+    chkAntiAliasing: TCheckBox;
     procedure FormCreate(Sender: TObject);
     procedure edtCharChange(Sender: TObject);
     procedure cmbFontsChange(Sender: TObject);
@@ -59,21 +61,24 @@ type
     procedure Label4Click(Sender: TObject);
     procedure Button1Click(Sender: TObject);
     procedure edtColorChange(Sender: TObject);
+    procedure chkAntiAliasingClick(Sender: TObject);
   private
     FChar: string;
     FFontName: string;
     FFontColor: TColor;
     procedure UpdatePreview;
+    function GetUseAntiAlias: Boolean;
   public
     property FontName: string read FFontName;
     property FontColor: TColor read FFontColor;
     property Character: string read FChar;
+    property UseAntiAlias: Boolean read GetUseAntiAlias;
   end;
 
 var
   frmFontIconPicker: TfrmFontIconPicker;
 
-procedure CopyIconFont(const FontName, Character: string; Width, Height: Integer; Color: TColor; Canvas: TCanvas);
+procedure CopyIconFont(const FontName, Character: string; Width, Height: Integer; UseAntiAlias: Boolean; Color: TColor; Canvas: TCanvas);
 
 implementation
 
@@ -82,7 +87,19 @@ implementation
 const
   DefaultFont = 'Segoe MDL2 Assets';
 
-procedure CopyIconFont(const FontName, Character: string; Width, Height: Integer; Color: TColor; Canvas: TCanvas);
+procedure SetFontQuality(Font: TFont; Quality: Byte);
+var
+  LogFont: TLogFont;
+begin
+  if GetObject(Font.Handle, SizeOf(TLogFont), @LogFont) = 0 then
+    RaiseLastOSError;
+  LogFont.lfQuality := Quality;
+  Font.Handle := CreateFontIndirect(LogFont);
+end;
+
+procedure CopyIconFont(const FontName, Character: string; Width, Height: Integer; UseAntiAlias: Boolean; Color: TColor; Canvas: TCanvas);
+const
+  FontQualities: array [Boolean] of Byte = (NONANTIALIASED_QUALITY, DEFAULT_QUALITY);
 var
   CharWidth: Integer;
   CharHeight: Integer;
@@ -94,6 +111,7 @@ begin
   Canvas.FillRect(Rect(0, 0, Width, Height));
   CharWidth := Canvas.TextWidth(Character);
   CharHeight := Canvas.TextHeight(Character);
+  SetFontQuality(Canvas.Font, FontQualities[UseAntiAlias]);
   Canvas.TextOut((Width - CharWidth) div 2, (Height - CharHeight) div 2, Character);
 end;
 
@@ -101,6 +119,11 @@ procedure TfrmFontIconPicker.Button1Click(Sender: TObject);
 begin
   FFontName := cmbFonts.Text;
   FFontColor := edtColor.Selected;
+end;
+
+procedure TfrmFontIconPicker.chkAntiAliasingClick(Sender: TObject);
+begin
+  UpdatePreview;
 end;
 
 procedure TfrmFontIconPicker.cmbFontsChange(Sender: TObject);
@@ -149,6 +172,11 @@ begin
   UpdatePreview;
 end;
 
+function TfrmFontIconPicker.GetUseAntiAlias: Boolean;
+begin
+  Result := chkAntiAliasing.Checked;
+end;
+
 procedure TfrmFontIconPicker.Label2Click(Sender: TObject);
 begin
   ShellExecute(Handle, 'open', 'https://docs.microsoft.com/it-it/windows/uwp/design/style/segoe-ui-symbol-font', '', '', SW_SHOWNORMAL);
@@ -161,11 +189,11 @@ end;
 
 procedure TfrmFontIconPicker.UpdatePreview;
 begin
-  CopyIconFont(cmbFonts.Text, FChar, 16, 16, edtColor.Selected, Image16x16.Canvas);
+  CopyIconFont(cmbFonts.Text, FChar, 16, 16, chkAntiAliasing.Checked, edtColor.Selected, Image16x16.Canvas);
 
-  CopyIconFont(cmbFonts.Text, FChar, 32, 32, edtColor.Selected, Image32x32.Canvas);
+  CopyIconFont(cmbFonts.Text, FChar, 32, 32, chkAntiAliasing.Checked,edtColor.Selected, Image32x32.Canvas);
 
-  CopyIconFont(cmbFonts.Text, FChar, 64, 64, edtColor.Selected, Image64x64.Canvas);
+  CopyIconFont(cmbFonts.Text, FChar, 64, 64, chkAntiAliasing.Checked,edtColor.Selected, Image64x64.Canvas);
 
 end;
 

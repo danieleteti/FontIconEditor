@@ -3,7 +3,7 @@ object frmFontIconPicker: TfrmFontIconPicker
   Top = 0
   BorderStyle = bsDialog
   Caption = 'Icon picker'
-  ClientHeight = 398
+  ClientHeight = 449
   ClientWidth = 286
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -11,13 +11,11 @@ object frmFontIconPicker: TfrmFontIconPicker
   Font.Height = -11
   Font.Name = 'Tahoma'
   Font.Style = []
-  OldCreateOrder = False
   Position = poScreenCenter
   OnCreate = FormCreate
   DesignSize = (
     286
-    398)
-  PixelsPerInch = 96
+    449)
   TextHeight = 13
   object Label1: TLabel
     Left = 16
@@ -35,7 +33,7 @@ object frmFontIconPicker: TfrmFontIconPicker
   end
   object Label2: TLabel
     Left = 16
-    Top = 367
+    Top = 415
     Width = 94
     Height = 13
     Cursor = crHandPoint
@@ -50,7 +48,7 @@ object frmFontIconPicker: TfrmFontIconPicker
   end
   object Label4: TLabel
     Left = 16
-    Top = 342
+    Top = 390
     Width = 71
     Height = 13
     Cursor = crHandPoint
@@ -65,7 +63,7 @@ object frmFontIconPicker: TfrmFontIconPicker
   end
   object Label8: TLabel
     Left = 16
-    Top = 112
+    Top = 160
     Width = 25
     Height = 13
     Caption = 'Color'
@@ -115,7 +113,7 @@ object frmFontIconPicker: TfrmFontIconPicker
   end
   object GroupBox1: TGroupBox
     Left = 8
-    Top = 158
+    Top = 206
     Width = 177
     Height = 178
     Caption = 'Preview'
@@ -209,10 +207,22 @@ object frmFontIconPicker: TfrmFontIconPicker
   end
   object edtColor: TColorBox
     Left = 16
-    Top = 131
+    Top = 179
     Width = 169
     Height = 22
     TabOrder = 5
     OnChange = edtColorChange
+  end
+  object chkAntiAliasing: TCheckBox
+    Left = 16
+    Top = 114
+    Width = 169
+    Height = 31
+    Caption = 'Use anti-aliasing'
+    Checked = True
+    State = cbChecked
+    TabOrder = 6
+    WordWrap = True
+    OnClick = chkAntiAliasingClick
   end
 end

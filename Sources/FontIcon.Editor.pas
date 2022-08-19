@@ -33,7 +33,7 @@ uses
 type
   TImageListCompEditor = class (TComponentEditor)
   private
-    procedure AddFontIcon(const FontName, Character: string; Color: TColor);
+    procedure AddFontIcon(const FontName, Character: string; Color: TColor; const UseAntiAlias: Boolean);
   public
     function GetVerbCount: Integer; override;
     function GetVerb(Index: Integer): string; override;
@@ -55,7 +55,7 @@ begin
   inherited;
 end;
 
-procedure TImageListCompEditor.AddFontIcon(const FontName, Character: string; Color: TColor);
+procedure TImageListCompEditor.AddFontIcon(const FontName, Character: string; Color: TColor; const UseAntiAlias: Boolean);
 var
   Bitmap: TBitmap;
   ImageList: TImageList;
@@ -65,7 +65,7 @@ begin
   try
     Bitmap.Width := ImageList.Width;
     Bitmap.Height := ImageList.Height;
-    CopyIconFont(FontName, Character, Bitmap.Width, Bitmap.Height, Color, Bitmap.Canvas);
+    CopyIconFont(FontName, Character, Bitmap.Width, Bitmap.Height, UseAntiAlias, Color, Bitmap.Canvas);
     ImageList.AddMasked(Bitmap, clWhite);
   finally
     Bitmap.Free;
@@ -86,7 +86,7 @@ begin
     try
       if frmFontIconPicker.ShowModal = mrOk then
       begin
-        AddFontIcon(frmFontIconPicker.FontName, frmFontIconPicker.Character, frmFontIconPicker.FontColor);
+        AddFontIcon(frmFontIconPicker.FontName, frmFontIconPicker.Character, frmFontIconPicker.FontColor, frmFontIconPicker.UseAntiAlias);
         Designer.Modified;
       end;
     finally
